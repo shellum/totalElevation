@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="app_name">Total Elevation</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_elevation">Total Elevation</string>
+    
+    <string name="lat">Lat: </string>
+    <string name="lon">Lon: </string>
+    <string name="elevation_start">Start: </string>
+    <string name="elevation">Elevation: </string>
+    <string name="elevation_change">Change: </string>
+    <string name="default_text">Default</string>
+    <string name="waiting">Looking for satellites. . .</string>
+    <string name="gps_signal_strength">Signal strength: </string>
+    <string name="gps_number_of_satellites">Satellites available: </string>
+    <string name="gps_disabled">Please turn GPS on</string>
+    <string name="gps_fix_quality">GPS fix quality: </string>
+    <string name="visible_sats">Visible sats: </string>
+    <string name="ok">OK</string>
+    <string name="help">To work:\nGPS must be on\nThere should be at least 4 satellites\nSignal strength should be at least 15\nThanks.</string>
+
+</resources>
