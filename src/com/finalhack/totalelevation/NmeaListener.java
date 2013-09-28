@@ -15,8 +15,12 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 	private static final int NMEA_SENTENCE_COUNT = 1;
 	private static final int NMEA_SENTENCE_NUMBER = 2;
 	private static final int NMEA_FIX_QUALITY = 6;
+	private static final int NMEA_PDOP = 15;
 	private static final String NMEA_SATELLITES_IN_VIEW = "GPGSV";
 	private static final String NMEA_LOCATION_AND_ACCURACY_DATA = "GPGGA";
+	private static final String NMEA_DOP = "GPGSA";
+	
+	private String pdop = null;
 	
 	private int nmeaSentenceCount = -1;
 	private List<String> individualNmeaSatellites;
@@ -86,8 +90,13 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 					if (BuildConfig.DEBUG) Log.d("", satellite);
 					
 					try {
-						String textStrength = satellite.split(NMEA_DELIMITER)[Util.NMEA_SUB_SIGNAL];
-						String prn = satellite.split(NMEA_DELIMITER)[Util.NMEA_SUB_PRN_NUMBER];
+						if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION, satellite);
+						
+						String[] satelliteParts = satellite.split(NMEA_DELIMITER);
+						if (satelliteParts == null || satelliteParts.length <= Util.NMEA_SUB_SIGNAL) continue;
+						
+						String textStrength = satelliteParts[Util.NMEA_SUB_SIGNAL];
+						String prn = satelliteParts[Util.NMEA_SUB_PRN_NUMBER];
 						
 						// Make sure there is a signal strength for this sat
 						if (textStrength == null || textStrength.length() == 0) continue;
@@ -97,7 +106,12 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 						if (strength > 0) {
 							totalSignalStrength += strength;
 							numOfSatellites++;
-							validSatPrnList += prn + NMEA_DELIMITER;
+							
+							// Comma delimit, but not before the first element
+							if (validSatPrnList.length() != 0)
+								validSatPrnList += NMEA_DELIMITER;
+
+							validSatPrnList += prn;
 						}
 					} catch (Exception e) {
 						if (BuildConfig.DEBUG) {
@@ -125,8 +139,17 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 			if (nmeaParts.length > NMEA_FIX_QUALITY && nmeaParts[NMEA_FIX_QUALITY].length() > 0) {
 				String fixQuality = nmeaParts[NMEA_FIX_QUALITY];
 				fixQuality = fixQualityMap.get(fixQuality);
-				mViewHolder.fixQuality.setText(mViewHolder.context.getString(R.string.gps_fix_quality) + fixQuality);
+				String quality = mViewHolder.context.getString(R.string.gps_fix_quality) + fixQuality;
+				if (pdop != null) quality += mViewHolder.context.getString(R.string.pdop) + pdop;
+				mViewHolder.fixQuality.setText(quality);
 			}
+		}
+		else if (nmea.contains(NMEA_DOP)) {
+			String[] nmeaParts = nmea.split(NMEA_DELIMITER);
+			// If we have fix quality data
+			if (nmeaParts.length > NMEA_PDOP && nmeaParts[NMEA_PDOP].length() > 0) {
+				pdop = nmeaParts[NMEA_PDOP];
+			}			
 		}
 	}
 }

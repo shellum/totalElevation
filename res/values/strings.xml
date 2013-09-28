@@ -17,7 +17,8 @@
     <string name="gps_disabled">Please turn GPS on</string>
     <string name="gps_fix_quality">GPS fix quality: </string>
     <string name="visible_sats">Visible sats: </string>
+    <string name="pdop">, PDOP: </string>
     <string name="ok">OK</string>
-    <string name="help">To work:\nGPS must be on\nThere should be at least 4 satellites\nSignal strength should be at least 15\nThanks.</string>
+    <string name="help">To work:\nGPS must be on\nThere should be at least 3 satellites\n\nFor accuracy, PDOP should be less than 3 (less than 2 for high accuracy)\n\nThanks.</string>
 
 </resources>

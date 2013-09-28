@@ -123,7 +123,7 @@ public class Graph extends View {
 				lastY = y;
 				startX += lineLength;
 				
-				if (BuildConfig.DEBUG) Log.d(TAG_GRAPH, "y: " + y);
+				//if (BuildConfig.DEBUG) Log.d(TAG_GRAPH, "y: " + y);
 			}
 			
 			//Reset the initial y coordinate for the first elevation plot

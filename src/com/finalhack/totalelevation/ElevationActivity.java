@@ -27,13 +27,12 @@ public class ElevationActivity extends Activity {
 	//Some non-ui properties
 	private LocationManager locationManager;
 	private LocationListener locationListener;
+	private NmeaListener nmeaListener;
 	private double startElevation = Double.MIN_VALUE;	
 	private String locale = "en_US";
 
 	//All our constants
 	public static final String TAG_ELEVATION = "";
-	
-
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class ElevationActivity extends Activity {
     	super.onPause();
     	//If we were listening for locations, stop
     	if (locationListener != null) locationManager.removeUpdates(locationListener);
+    	if (nmeaListener != null) locationManager.removeNmeaListener(nmeaListener);
     }
     
     //Start GPS updates
@@ -95,7 +95,7 @@ public class ElevationActivity extends Activity {
     	
     	//Gather statistics using NMEA
     	ViewHolder viewHolder = new ViewHolder(this, numSatellites, signalStrength, fixQuality, prnList);
-    	com.finalhack.totalelevation.NmeaListener nmeaListener = new com.finalhack.totalelevation.NmeaListener(viewHolder);
+    	nmeaListener = new com.finalhack.totalelevation.NmeaListener(viewHolder);
     	locationManager.addNmeaListener(nmeaListener);
     	
     	return true;
@@ -135,6 +135,9 @@ public class ElevationActivity extends Activity {
 			//  for a moving average
 			if (lastElevations.size() > MOVING_AVERAGE)	lastElevations.remove(0);
 			
+			// Don't update if we don't have at least two fixes to average
+			if (lastElevations.size() < 2) return;
+			
 			int movingAverageElevation = 0;
 			for (double previousElevation : lastElevations) movingAverageElevation += previousElevation;
 			
@@ -147,29 +150,8 @@ public class ElevationActivity extends Activity {
 			graph.updateElevation(Util.localizeInt(movingAverageElevation, locale));
 		}
 		
-
-		
 		@Override public void onProviderDisabled(String provider){}
 		@Override public void onProviderEnabled(String provider){}
 		@Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-		/*
-		private void dumpSateelliteData()
-		{
-			GpsStatus gpsStatus = locationManager.getGpsStatus(null);
-			int ttff = gpsStatus.getTimeToFirstFix();
-			if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION,"ttff: "+ttff);
-			Iterator<GpsSatellite> iterator = gpsStatus.getSatellites().iterator();
-			int i=0;
-			while (iterator.hasNext())
-			{
-				GpsSatellite satellite = iterator.next();
-				if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION,"i-al:" + satellite.hasAlmanac());
-				if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION,"i-ep:" + satellite.hasEphemeris());
-				if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION,"i-u:" + satellite.usedInFix());
-				if (BuildConfig.DEBUG) Log.d(TAG_ELEVATION,"i-p:" + satellite.getPrn());
-				i++;
-			}
-		}
-		*/
     }
 }
