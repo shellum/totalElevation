@@ -126,7 +126,7 @@ public class ElevationActivity extends Activity {
 			lat.setText(getString(R.string.lat)+location.getLatitude());
 			lon.setText(getString(R.string.lon)+location.getLongitude());
 			
-			startElevation = location.getAltitude();
+			if (startElevation == Double.MIN_VALUE) startElevation = location.getAltitude();
 			start.setText(getString(R.string.elevation_start) + Util.localizeString(startElevation, locale));
 			
 			lastElevations.add(location.getAltitude());
