@@ -26,8 +26,10 @@ public class Graph extends View {
 	private int lastY = Integer.MIN_VALUE;
 	private int minElevation = Integer.MAX_VALUE;
 	private int maxElevation = Integer.MIN_VALUE;
+	private float lineWidth = 2;
 	private int borderSize = 2;
 	public List<Integer> elevations = new ArrayList<Integer>();
+	public List<Integer> satList = new ArrayList<Integer>();
 	 
 	//Some stats
 	private float density;
@@ -56,6 +58,7 @@ public class Graph extends View {
 		outlinePaint.setColor(outlineColor);
 		linePaint.setColor(lineColor);
 		linePaint.setAntiAlias(true);
+		linePaint.setStrokeWidth(lineWidth);
 		textPaint.setColor(textColor);
 		textPaint.setTextSize(textSize);
 		
@@ -76,6 +79,10 @@ public class Graph extends View {
 		if (elevation > maxElevation) maxElevation = elevation;
 		if (BuildConfig.DEBUG) Log.d("", "added: "+ elevation);
 		this.invalidate();
+	}
+	
+	public void setAvailSats(List<Integer> satList) {
+		this.satList = satList;
 	}
 	
 	//The real drawing happens here

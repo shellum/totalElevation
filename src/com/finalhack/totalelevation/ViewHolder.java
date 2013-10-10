@@ -7,12 +7,13 @@ import android.widget.TextView;
 // See flyweight pattern
 public class ViewHolder {
 	
-	public ViewHolder(Context context, TextView numSatellites, TextView signalStrength, TextView fixQuality, TextView prnList) {
+	public ViewHolder(Context context, TextView numSatellites, TextView signalStrength, TextView fixQuality, TextView prnList, Graph graph) {
 		this.context = context;
 		this.numSatellites = numSatellites;
 		this.signalStrength = signalStrength;
 		this.fixQuality = fixQuality;
 		this.prnList = prnList;
+		this.graph = graph;
 	}
 	
 	public Context context;
@@ -20,4 +21,5 @@ public class ViewHolder {
 	public TextView signalStrength;
 	public TextView fixQuality;
 	public TextView prnList;
+	public Graph graph;
 }

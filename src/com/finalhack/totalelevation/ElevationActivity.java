@@ -94,7 +94,7 @@ public class ElevationActivity extends Activity {
     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_FREQUENCY, 0, locationListener);
     	
     	//Gather statistics using NMEA
-    	ViewHolder viewHolder = new ViewHolder(this, numSatellites, signalStrength, fixQuality, prnList);
+    	ViewHolder viewHolder = new ViewHolder(this, numSatellites, signalStrength, fixQuality, prnList, graph);
     	nmeaListener = new com.finalhack.totalelevation.NmeaListener(viewHolder);
     	locationManager.addNmeaListener(nmeaListener);
     	
