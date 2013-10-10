@@ -3,6 +3,7 @@ package com.finalhack.totalelevation;
 import static com.finalhack.totalelevation.ElevationActivity.TAG_ELEVATION;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,18 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 						}
 					}
 				}
+				
+				List<Integer> prnList = new ArrayList<Integer>();
+				String[] prnStrings = validSatPrnList.split(NMEA_DELIMITER);
+				for (String prn : prnStrings) {
+					try {
+						prnList.add(Integer.parseInt(prn));
+					}
+					catch(Exception e) {
+						if (BuildConfig.DEBUG) e.printStackTrace();
+					}
+				}
+				mViewHolder.graph.setAvailSats(prnList);
 				
 				// Calculate the average signal strength
 				int averageSignalStrength = 0;

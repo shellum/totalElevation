@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="right"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="@dimen/form_padding" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -86,7 +86,7 @@
     </LinearLayout>
 
     <com.finalhack.totalelevation.Graph
-        android:layout_height="100dp"
+        android:layout_height="@dimen/graph_height"
         android:layout_width="0dp"
         android:id="@+id/graph" />
         
