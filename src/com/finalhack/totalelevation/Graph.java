@@ -5,10 +5,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -23,7 +26,7 @@ public class Graph extends View {
 	private int lineColor = 0xff0000ff;
 	private int textColor = 0xff000000;
 	private int height = 0;
-	private int textSize = 18;
+	private int textSize = 0;
 	private int lastY = Integer.MIN_VALUE;
 	private int minElevation = Integer.MAX_VALUE;
 	private int maxElevation = Integer.MIN_VALUE;
@@ -31,7 +34,7 @@ public class Graph extends View {
 	private int borderSize = 2;
 	public List<Integer> elevations = new ArrayList<Integer>();
 	public List<Integer> satList = new ArrayList<Integer>();
-
+	
 	private static final int MAX_POSSIBLE_VISIBLE_SATS = 16;
 	
 	private String[] satColors = {
@@ -62,6 +65,9 @@ public class Graph extends View {
 	private Paint satPaint = new Paint();
 	private Paint whitePaint = new Paint();
 	private Rect rect = new Rect(0, 0, 0, 0);
+	private Rect satRect = new Rect(0, 0, 0, 0);
+	private int satTextHeight = 0;
+	private int formPadding = 0;
 
 	// Standard constructor
 	@SuppressWarnings("deprecation")
@@ -69,6 +75,9 @@ public class Graph extends View {
 		super(context, attrSet);
 
 		height = (int)getContext().getResources().getDimension(R.dimen.graph_height);
+		textSize = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_size);
+		satTextHeight = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_y);
+		formPadding = (int)getContext().getResources().getDimension(R.dimen.form_padding);
 		
 		// Added for preview view in IDE
 		if (isInEditMode()) return;
@@ -83,7 +92,7 @@ public class Graph extends View {
 		linePaint.setAntiAlias(true);
 		linePaint.setStrokeWidth(lineWidth);
 		whitePaint.setColor(Color.WHITE);
-		textPaint.setColor(textColor);
+		textPaint.setColor(Color.WHITE);
 		textPaint.setTextSize(textSize);
 
 		// Setup the view's background
@@ -111,12 +120,21 @@ public class Graph extends View {
 		// Draw the background
 		canvas.drawRect(rect, outlinePaint);
 
-		int left = (int)getContext().getResources().getDimension(R.dimen.form_padding);
+		// Draw each satellite box
+		int left = formPadding;
 		int satWidth = screenWidth / MAX_POSSIBLE_VISIBLE_SATS;
 		for (int i=0;i<satList.size();i++) {
 			satPaint.setColor(Color.parseColor(satColors[i]));
-			canvas.drawRect(new Rect(left, 0, left + satWidth, height), whitePaint);
-			canvas.drawRect(new Rect(left+1, 0+1, left + satWidth - 1, height - 1), satPaint);
+			// First draw the box background & border
+			satRect.set(left, 0, left + satWidth, height);
+			canvas.drawRect(satRect, whitePaint);
+			// Then draw the box (background shrunken by 1)
+			satRect.set(left+1, 0+1, left + satWidth - 1, height - 1);
+			canvas.drawRect(satRect, satPaint);
+			// Now, label the box
+			canvas.drawText(""+satList.get(i), (float)left + formPadding, satTextHeight, textPaint);
+			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.radar);
+			canvas.drawBitmap(bitmap, left, satTextHeight * 2, whitePaint);
 			left += satWidth;
 		}
 
