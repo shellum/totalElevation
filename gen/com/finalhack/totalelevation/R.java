@@ -30,12 +30,12 @@ public final class R {
         public static final int gps_number_of_satellites=0x7f080005;
         public static final int gps_signal_strength=0x7f080006;
         public static final int graph=0x7f080007;
-        public static final int imageView1=0x7f080009;
+        public static final int imageView1=0x7f08000a;
         public static final int prn_list=0x7f080003;
         public static final int text_change=0x7f080001;
         public static final int text_elevation=0x7f080002;
         public static final int text_lat=0x7f080008;
-        public static final int text_lon=0x7f08000a;
+        public static final int text_lon=0x7f080009;
         public static final int text_start=0x7f080000;
     }
     public static final class layout {
