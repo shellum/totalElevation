@@ -36,6 +36,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/waiting"
+        android:textColor="@color/main_elevation_color"
         android:textSize="18sp" />
 
     <LinearLayout

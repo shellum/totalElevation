@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -24,7 +23,6 @@ public class Graph extends View {
 	// Style information
 	private int outlineColor = 0xffdddddd;
 	private int lineColor = 0xff0000ff;
-	private int textColor = 0xff000000;
 	private int height = 0;
 	private int textSize = 0;
 	private int lastY = Integer.MIN_VALUE;
@@ -34,25 +32,27 @@ public class Graph extends View {
 	private int borderSize = 2;
 	public List<Integer> elevations = new ArrayList<Integer>();
 	public List<Integer> satList = new ArrayList<Integer>();
+	private Bitmap radarBitmap = null;
+	private int fadeCounter = 0;
 	
 	private static final int MAX_POSSIBLE_VISIBLE_SATS = 16;
 	
 	private String[] satColors = {
-			"#aa7D8A2E",
-			"#aaC9D787",
-			"#aa7E8AA2",
-			"#aaD8CAA8",
-			"#aa284907",
-			"#aa382513",
-			"#aa468966",
-			"#aa5C832F",
-			"#aaFFB03B",
-			"#aa363942",
-			"#aaB64926",
-			"#aa8E2800",
-			"#aa263248",
-			"#aaFF9800",
-			"#aaFFC0A9"
+			"7D8A2E",
+			"C9D787",
+			"7E8AA2",
+			"D8CAA8",
+			"284907",
+			"382513",
+			"468966",
+			"5C832F",
+			"FFB03B",
+			"363942",
+			"B64926",
+			"8E2800",
+			"263248",
+			"FF9800",
+			"FFC0A9"
 		};
 	
 	// Some stats
@@ -78,6 +78,8 @@ public class Graph extends View {
 		textSize = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_size);
 		satTextHeight = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_y);
 		formPadding = (int)getContext().getResources().getDimension(R.dimen.form_padding);
+		
+		radarBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.radar);
 		
 		// Added for preview view in IDE
 		if (isInEditMode()) return;
@@ -110,6 +112,7 @@ public class Graph extends View {
 
 	public void setAvailSats(List<Integer> satList) {
 		this.satList = satList;
+		this.invalidate();
 	}
 
 	// The real drawing happens here
@@ -124,18 +127,27 @@ public class Graph extends View {
 		int left = formPadding;
 		int satWidth = screenWidth / MAX_POSSIBLE_VISIBLE_SATS;
 		for (int i=0;i<satList.size();i++) {
-			satPaint.setColor(Color.parseColor(satColors[i]));
+			String fadedColorAlpha = "" + fadeCounter;
+			if (fadedColorAlpha.length()<2) fadedColorAlpha = "0" + fadedColorAlpha;
+			String fadedColor = "#" + fadedColorAlpha + satColors[i];
+			satPaint.setColor(Color.parseColor(fadedColor));
 			// First draw the box background & border
 			satRect.set(left, 0, left + satWidth, height);
-			canvas.drawRect(satRect, whitePaint);
+			canvas.drawRect(satRect, outlinePaint);
 			// Then draw the box (background shrunken by 1)
 			satRect.set(left+1, 0+1, left + satWidth - 1, height - 1);
 			canvas.drawRect(satRect, satPaint);
 			// Now, label the box
-			canvas.drawText(""+satList.get(i), (float)left + formPadding, satTextHeight, textPaint);
-			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.radar);
-			canvas.drawBitmap(bitmap, left, satTextHeight * 2, whitePaint);
+			canvas.drawText("" + satList.get(i), (float)left + formPadding, satTextHeight, textPaint);
+			canvas.drawBitmap(radarBitmap, left, satTextHeight * 2, whitePaint);
 			left += satWidth;
+		}
+		
+		fadeCounter +=5;
+		if (fadeCounter >= 100) {
+			fadeCounter = 0;
+		} else {
+			invalidate();
 		}
 
 		if (BuildConfig.DEBUG) Log.d("", elevations.toString());
