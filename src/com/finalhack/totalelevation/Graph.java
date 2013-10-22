@@ -28,7 +28,7 @@ public class Graph extends View {
 	private int lastY = Integer.MIN_VALUE;
 	private int minElevation = Integer.MAX_VALUE;
 	private int maxElevation = Integer.MIN_VALUE;
-	private float lineWidth = 2;
+	private float lineWidth = 10;
 	private int borderSize = 2;
 	public List<Integer> elevations = new ArrayList<Integer>();
 	public List<SatSpecificData> satSpecificData = new ArrayList<SatSpecificData>();
