@@ -83,6 +83,7 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 				int totalSignalStrength = 0;
 				
 				String validSatPrnList = "";
+				List<SatSpecificData> satSpecificData = new ArrayList<SatSpecificData>();
 				
 				// Get the average signal strength
 				for (String satellite : individualNmeaSatellites) {
@@ -113,6 +114,9 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 
 							validSatPrnList += prn;
 						}
+						
+						satSpecificData.add(new SatSpecificData(prn, textStrength));
+						
 					} catch (Exception e) {
 						if (BuildConfig.DEBUG) {
 							Log.d("", e.getMessage(), e);
@@ -121,17 +125,7 @@ public class NmeaListener implements android.location.GpsStatus.NmeaListener {
 					}
 				}
 				
-				List<Integer> prnList = new ArrayList<Integer>();
-				String[] prnStrings = validSatPrnList.split(NMEA_DELIMITER);
-				for (String prn : prnStrings) {
-					try {
-						prnList.add(Integer.parseInt(prn));
-					}
-					catch(Exception e) {
-						if (BuildConfig.DEBUG) e.printStackTrace();
-					}
-				}
-				mViewHolder.graph.setAvailSats(prnList);
+				mViewHolder.graph.setSatSpecificData(satSpecificData);
 				
 				// Calculate the average signal strength
 				int averageSignalStrength = 0;

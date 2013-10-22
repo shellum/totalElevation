@@ -31,10 +31,12 @@ public class Graph extends View {
 	private float lineWidth = 2;
 	private int borderSize = 2;
 	public List<Integer> elevations = new ArrayList<Integer>();
-	public List<Integer> satList = new ArrayList<Integer>();
+	public List<SatSpecificData> satSpecificData = new ArrayList<SatSpecificData>();
 	private Bitmap radarBitmap = null;
 	private int fadeCounter = 0;
-	
+	private int graphicalSignalStrengthMultiplier = 3;
+	private int maxSignalStrength = 40;
+
 	private static final int MAX_POSSIBLE_VISIBLE_SATS = 16;
 	
 	private String[] satColors = {
@@ -110,8 +112,8 @@ public class Graph extends View {
 		this.invalidate();
 	}
 
-	public void setAvailSats(List<Integer> satList) {
-		this.satList = satList;
+	public void setSatSpecificData(List<SatSpecificData> satSpecificData) {
+		this.satSpecificData = satSpecificData;
 		this.invalidate();
 	}
 
@@ -126,19 +128,22 @@ public class Graph extends View {
 		// Draw each satellite box
 		int left = formPadding;
 		int satWidth = screenWidth / MAX_POSSIBLE_VISIBLE_SATS;
-		for (int i=0;i<satList.size();i++) {
+		for (int i=0;i<satSpecificData.size();i++) {
 			String fadedColorAlpha = "" + fadeCounter;
 			if (fadedColorAlpha.length()<2) fadedColorAlpha = "0" + fadedColorAlpha;
 			String fadedColor = "#" + fadedColorAlpha + satColors[i];
 			satPaint.setColor(Color.parseColor(fadedColor));
 			// First draw the box background & border
-			satRect.set(left, 0, left + satWidth, height);
+			// Its height (top) is lowered/raised proportionately to signal strength
+			int startHeight = maxSignalStrength - Integer.parseInt(satSpecificData.get(i).signalStrength);
+			startHeight *= graphicalSignalStrengthMultiplier;
+			satRect.set(left, startHeight, left + satWidth, height);
 			canvas.drawRect(satRect, outlinePaint);
 			// Then draw the box (background shrunken by 1)
-			satRect.set(left+1, 0+1, left + satWidth - 1, height - 1);
+			satRect.set(left+borderSize, borderSize+startHeight, left + satWidth - borderSize, height - borderSize);
 			canvas.drawRect(satRect, satPaint);
 			// Now, label the box
-			canvas.drawText("" + satList.get(i), (float)left + formPadding, satTextHeight, textPaint);
+			canvas.drawText("#" + satSpecificData.get(i).prnNumber, (float)left + formPadding, satTextHeight * 2, textPaint);
 			canvas.drawBitmap(radarBitmap, left, satTextHeight * 2, whitePaint);
 			left += satWidth;
 		}
@@ -197,4 +202,5 @@ public class Graph extends View {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		setMeasuredDimension(screenWidth, height + borderSize);
 	}
+	
 }
