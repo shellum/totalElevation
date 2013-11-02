@@ -14,6 +14,7 @@ public final class R {
         public static final int main_elevation_color=0x7f040000;
     }
     public static final class dimen {
+        public static final int elevation_text_size=0x7f050004;
         public static final int form_padding=0x7f050000;
         public static final int graph_height=0x7f050001;
         public static final int graph_sat_text_size=0x7f050002;

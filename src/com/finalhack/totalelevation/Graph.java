@@ -34,7 +34,7 @@ public class Graph extends View {
 	public List<SatSpecificData> satSpecificData = new ArrayList<SatSpecificData>();
 	private Bitmap radarBitmap = null;
 	private int fadeCounter = 0;
-	private int graphicalSignalStrengthMultiplier = 3;
+	private int graphicalSignalStrengthMultiplier = 2;
 	private int maxSignalStrength = 40;
 
 	private static final int MAX_POSSIBLE_VISIBLE_SATS = 16;
@@ -70,12 +70,15 @@ public class Graph extends View {
 	private Rect satRect = new Rect(0, 0, 0, 0);
 	private int satTextHeight = 0;
 	private int formPadding = 0;
+	private double density;
 
 	// Standard constructor
 	@SuppressWarnings("deprecation")
 	public Graph(Context context, AttributeSet attrSet) {
 		super(context, attrSet);
 
+		density = getResources().getDisplayMetrics().density;
+		
 		height = (int)getContext().getResources().getDimension(R.dimen.graph_height);
 		textSize = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_size);
 		satTextHeight = (int)getContext().getResources().getDimension(R.dimen.graph_sat_text_y);
@@ -128,6 +131,7 @@ public class Graph extends View {
 		// Draw each satellite box
 		int left = formPadding;
 		int satWidth = screenWidth / MAX_POSSIBLE_VISIBLE_SATS;
+		
 		for (int i=0;i<satSpecificData.size();i++) {
 			String fadedColorAlpha = "" + fadeCounter;
 			if (fadedColorAlpha.length()<2) fadedColorAlpha = "0" + fadedColorAlpha;
@@ -137,6 +141,7 @@ public class Graph extends View {
 			// Its height (top) is lowered/raised proportionately to signal strength
 			int startHeight = maxSignalStrength - Integer.parseInt(satSpecificData.get(i).signalStrength);
 			startHeight *= graphicalSignalStrengthMultiplier;
+			startHeight *= density;
 			satRect.set(left, startHeight, left + satWidth, height);
 			canvas.drawRect(satRect, outlinePaint);
 			// Then draw the box (background shrunken by 1)

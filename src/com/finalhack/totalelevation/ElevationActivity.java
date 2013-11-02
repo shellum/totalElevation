@@ -121,7 +121,7 @@ public class ElevationActivity extends Activity {
 			TextView start = (TextView)findViewById(R.id.text_start);
 			
 			//Update all the text with location data
-			elevation.setTextSize(80);
+			elevation.setTextSize(70);
 			elevation.setText(Util.localizeString(location.getAltitude(), locale));
 			lat.setText(getString(R.string.lat)+location.getLatitude());
 			lon.setText(getString(R.string.lon)+location.getLongitude());

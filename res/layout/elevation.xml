@@ -37,7 +37,7 @@
         android:gravity="center"
         android:text="@string/waiting"
         android:textColor="@color/main_elevation_color"
-        android:textSize="18sp" />
+        android:textSize="@dimen/elevation_text_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
